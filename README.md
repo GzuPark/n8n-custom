@@ -27,7 +27,7 @@ PostgreSQL 데이터베이스와 워커를 분리된 컨테이너로 실행하�
 cp env.example .env
 
 # .env 파일을 편집하여 보안을 위해 기본 값들을 변경하세요
-nano .env
+vim .env
 ```
 
 **반드시 변경해야 할 항목들:**
@@ -52,6 +52,7 @@ docker-compose up -d
 ### nginx를 통한 접근 흐름
 
 ```mermaid
+%%{init: {'theme':'default', 'themeVariables': {'fontFamily': 'Arial, sans-serif', 'fontSize': '14px', 'primaryTextColor': '#2563eb', 'signalTextColor': '#2563eb', 'labelTextColor': '#2563eb', 'actorTextColor': '#2563eb', 'messageText': '#2563eb', 'noteTextColor': '#2563eb', 'loopTextColor': '#2563eb', 'signalColor': '#2563eb', 'lineColor': '#2563eb', 'messageLine0': '#2563eb', 'messageLine1': '#2563eb', 'actorLineColor': '#2563eb'}}}%%
 sequenceDiagram
     participant U as 👤 사용자
     participant N as 🌐 nginx<br/>(Port: {EXPOSE_PORT})
@@ -95,6 +96,7 @@ sequenceDiagram
 ### 네트워크 보안 흐름
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ff6b6b', 'primaryTextColor': '#000000', 'primaryBorderColor': '#4285f4', 'lineColor': '#4285f4', 'textColor': '#000000', 'background': '#ffffff', 'secondaryColor': '#006100', 'tertiaryColor': '#fff', 'edgeLabelBackground': '#ffffff', 'clusterBkg': '#ffffde', 'clusterBorder': '#aaaa33', 'defaultLinkColor': '#4285f4', 'titleColor': '#000000', 'edgeColor': '#4285f4'}}}%%
 graph TD
     A["🌍 외부 인터넷"] --> B["🌐 nginx<br/>(Port: {EXPOSE_PORT})<br/>공개 접근점"]
     B --> C["🔒 Docker 내부 네트워크"]
@@ -107,18 +109,27 @@ graph TD
         G --> F
     end
     
-    style A fill:#ffcdd2
-    style B fill:#ffecb3
-    style C fill:#e8f5e8
-    style D fill:#e1f5fe
-    style E fill:#fff3e0
-    style F fill:#e8f5e8
-    style G fill:#f3e5f5
+    style A fill:#ffcdd2,color:#000000,stroke:#4285f4
+    style B fill:#ffecb3,color:#000000,stroke:#4285f4
+    style C fill:#e8f5e8,color:#000000,stroke:#4285f4
+    style D fill:#e1f5fe,color:#000000,stroke:#4285f4
+    style E fill:#fff3e0,color:#000000,stroke:#4285f4
+    style F fill:#e8f5e8,color:#000000,stroke:#4285f4
+    style G fill:#f3e5f5,color:#000000,stroke:#4285f4
+    
+    linkStyle 0 stroke:#4285f4,stroke-width:2px
+    linkStyle 1 stroke:#4285f4,stroke-width:2px
+    linkStyle 2 stroke:#4285f4,stroke-width:2px
+    linkStyle 3 stroke:#4285f4,stroke-width:2px
+    linkStyle 4 stroke:#4285f4,stroke-width:2px
+    linkStyle 5 stroke:#4285f4,stroke-width:2px
+    linkStyle 6 stroke:#4285f4,stroke-width:2px
 ```
 
 ## 🏗️ 아키텍처
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ff6b6b', 'primaryTextColor': '#000000', 'primaryBorderColor': '#4285f4', 'lineColor': '#4285f4', 'textColor': '#000000', 'background': '#ffffff', 'secondaryColor': '#006100', 'tertiaryColor': '#fff', 'edgeLabelBackground': '#ffffff', 'clusterBkg': '#ffffde', 'clusterBorder': '#aaaa33', 'defaultLinkColor': '#4285f4', 'titleColor': '#000000', 'edgeColor': '#4285f4'}}}%%
 graph TD
     A["🌐 nginx<br/>(Port: {EXPOSE_PORT})<br/>리버스 프록시"] --> B["🔗 n8n Web UI<br/>(Internal: 5678)<br/>워크플로우 편집 및 관리"]
     B --> C["📨 Redis<br/>Message Queue<br/>작업 큐 관리"]
@@ -132,17 +143,28 @@ graph TD
     D --> H["🔄 작업 실행"]
     H --> E
     
-    style A fill:#ffecb3
-    style B fill:#e1f5fe
-    style D fill:#f3e5f5
-    style C fill:#fff3e0
-    style E fill:#e8f5e8
-    style F fill:#fce4ec
+    style A fill:#ffecb3,color:#000000,stroke:#4285f4
+    style B fill:#e1f5fe,color:#000000,stroke:#4285f4
+    style D fill:#f3e5f5,color:#000000,stroke:#4285f4
+    style C fill:#fff3e0,color:#000000,stroke:#4285f4
+    style E fill:#e8f5e8,color:#000000,stroke:#4285f4
+    style F fill:#fce4ec,color:#000000,stroke:#4285f4
+    
+    linkStyle 0 stroke:#4285f4,stroke-width:2px
+    linkStyle 1 stroke:#4285f4,stroke-width:2px
+    linkStyle 2 stroke:#4285f4,stroke-width:2px
+    linkStyle 3 stroke:#4285f4,stroke-width:2px
+    linkStyle 4 stroke:#4285f4,stroke-width:2px
+    linkStyle 5 stroke:#4285f4,stroke-width:2px
+    linkStyle 6 stroke:#4285f4,stroke-width:2px
+    linkStyle 7 stroke:#4285f4,stroke-width:2px
+    linkStyle 8 stroke:#4285f4,stroke-width:2px
 ```
 
 ## 🐳 Docker 서비스 구성
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ff6b6b', 'primaryTextColor': '#000000', 'primaryBorderColor': '#4285f4', 'lineColor': '#4285f4', 'textColor': '#000000', 'background': '#ffffff', 'secondaryColor': '#006100', 'tertiaryColor': '#fff', 'edgeLabelBackground': '#ffffff', 'clusterBkg': '#ffffde', 'clusterBorder': '#aaaa33', 'defaultLinkColor': '#4285f4', 'titleColor': '#000000', 'edgeColor': '#4285f4'}}}%%
 graph LR
     subgraph "Docker Compose Services"
         A["🌐 nginx<br/>Reverse Proxy<br/>Port: {EXPOSE_PORT}"]
@@ -168,11 +190,20 @@ graph LR
     E --> V2
     D --> V3
     
-    style A fill:#ffecb3
-    style B fill:#e1f5fe
-    style C fill:#f3e5f5
-    style D fill:#fff3e0
-    style E fill:#e8f5e8
+    style A fill:#ffecb3,color:#000000,stroke:#4285f4
+    style B fill:#e1f5fe,color:#000000,stroke:#4285f4
+    style C fill:#f3e5f5,color:#000000,stroke:#4285f4
+    style D fill:#fff3e0,color:#000000,stroke:#4285f4
+    style E fill:#e8f5e8,color:#000000,stroke:#4285f4
+    
+    linkStyle 0 stroke:#4285f4,stroke-width:2px
+    linkStyle 1 stroke:#4285f4,stroke-width:2px
+    linkStyle 2 stroke:#4285f4,stroke-width:2px
+    linkStyle 3 stroke:#4285f4,stroke-width:2px
+    linkStyle 4 stroke:#4285f4,stroke-width:2px
+    linkStyle 5 stroke:#4285f4,stroke-width:2px
+    linkStyle 6 stroke:#4285f4,stroke-width:2px
+    linkStyle 7 stroke:#4285f4,stroke-width:2px
 ```
 
 ## 🔧 주요 명령어
@@ -218,9 +249,10 @@ docker-compose down -v
 .
 ├── docker-compose.yaml     # Docker 서비스 정의
 ├── env.example            # 환경 변수 템플릿
-├── init-data.sh          # PostgreSQL 초기화 스크립트
 ├── nginx/
 │   └── nginx.conf        # nginx 리버스 프록시 설정
+├── postgres/
+│   └── init-data.sh      # PostgreSQL 초기화 스크립트
 └── scripts/
     ├── backup.sh         # DB 백업 스크립트
     ├── restore.sh        # DB 복원 스크립트
@@ -270,6 +302,7 @@ EXPOSE_PORT=8080  # 원하는 포트로 변경
 ### 웹훅 작동 원리
 
 ```mermaid
+%%{init: {'theme':'default', 'themeVariables': {'fontFamily': 'Arial, sans-serif', 'fontSize': '14px', 'primaryTextColor': '#2563eb', 'signalTextColor': '#2563eb', 'labelTextColor': '#2563eb', 'actorTextColor': '#2563eb', 'messageText': '#2563eb', 'noteTextColor': '#2563eb', 'loopTextColor': '#2563eb', 'signalColor': '#2563eb', 'lineColor': '#2563eb', 'messageLine0': '#2563eb', 'messageLine1': '#2563eb', 'actorLineColor': '#2563eb'}}}%%
 sequenceDiagram
     participant EXT as 🌍 외부 서비스<br/>(GitHub, Slack 등)
     participant CF as ☁️ Cloudflare Tunnel
