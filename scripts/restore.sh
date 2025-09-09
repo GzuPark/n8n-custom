@@ -35,7 +35,18 @@ log_step "데이터베이스 복원을 시작합니다..."
 log_info "n8n 서비스를 일시 중지합니다..."
 docker-compose stop n8n n8n-worker
 
-# 데이터베이스 복원 실행
+# 데이터베이스 초기화 및 복원 실행
+log_step "기존 데이터베이스를 초기화합니다..."
+docker-compose exec -T postgres psql \
+    -U "$POSTGRES_USER" \
+    -d postgres \
+    -c "DROP DATABASE IF EXISTS \"$POSTGRES_DB\";"
+
+docker-compose exec -T postgres psql \
+    -U "$POSTGRES_USER" \
+    -d postgres \
+    -c "CREATE DATABASE \"$POSTGRES_DB\";"
+
 log_step "백업 파일을 복원합니다..."
 docker-compose exec -T postgres psql \
     -U "$POSTGRES_USER" \
